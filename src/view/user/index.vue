@@ -78,10 +78,7 @@ export default {
     };
   },
   created() {
-    this.$wxSdk.onMenuShare('中睿企业管理','中睿企业管理通过游学、拓展、企业咨询的方式，致力于为在企业管理中遇到瓶颈和难题的企业提供专业有效的解决方案，为更多企业带来新的目标和希望。','http://x.wego168.com/zhongrui/mobile/POUND/activity?wo=1&wot=2&woacm=1&mpl=1','	http://athena-1255600302.cosgz.myqcloud.com/attachments/activity/008cef2ea40a4143be2aab3113b5d7cb.jpg')
     this.apiGetUser();
-    this.apiGetLevel(1);
-    this.apiGetLevel(2);
   },
   methods: {
     apiGetUser() {

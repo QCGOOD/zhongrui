@@ -9,7 +9,7 @@
         <div class="title">
           <p class="title-text">{{model.title}}</p>
           <p class="price" v-if="model.isEnableFee">
-            <span>￥</span>{{model.activityFee.price / 100}}
+            <span>￥</span>{{model.activityFee.price | formatPrice}}
           </p>
           <p class="price" v-else>
             免费
@@ -68,44 +68,43 @@
         </div>
       </div>
     </div>
-    <!-- <section class="remark">
+    <section class="remark" v-if="model.isEnableComment">
       <divider>留言</divider>
       <div class="remark__title">
         <span>所有留言</span>
-        <span>我要留言</span>
+        <span @click="showComment()">我要留言</span>
       </div>
       <ul class="remark__detail">
-        <li class="remark__list">
+        <li class="remark__list" v-for="(list) in comments" :key="list.id">
           <div class="headimg">
-            <img src="https://iph.href.lu/100x100" alt="" srcset="">
+            <img :src="list.memberHeadImage" alt="" srcset="">
           </div>
           <div class="content">
             <section class="info">
               <div class="unt">
-                <p>哈妹</p>
-                <p>一小时前</p>
+                <p>{{list.memberName}}</p>
+                <p>{{list.createTime}}</p>
               </div>
-              <p class="menu">
+              <p class="menu" @click="showComment(list)">
                 <i class="iconfont icon-pingluncu"></i>
                 回复
               </p>
             </section>
-            <p class="text">
-              一种学习的方式，是提高业务知识的最有效手段。21
-              世纪是知识经济社会，是电子化、网络化、数字化社
-              会，其知识更新、知识折旧日益加快。</p>
-            <ul class="reply">
-              <li>
-                <span>陈旭：</span>
-                一种学习的方式，是提高业务知识的最有效手段。21
-                世纪是知识经济社会，是电子化、网络化、数字化社
-                会，其知识更新、知识折旧日益加快。
+            <p class="text">{{list.content}}</p>
+            <ul class="reply" v-if="list.subComments">
+              <li v-for="child in list.subComments" :key="child.id">
+                <span>{{child.memberName}}：</span>
+                {{child.content}}
               </li>
             </ul>
           </div>
         </li>
       </ul>
-    </section> -->
+    </section>
+    <div class="comment" v-if="commentWarp">
+      <input v-focus v-model="commentModel.content" :placeholder="commentModel.placeholder" @blur="commentWarp = false" type="text">
+      <x-button class="btn-send" :disabled="sendLock" @click.native="saveComment">{{commentModel.parentId ? '回复' :'评论'}}</x-button>
+    </div>
     <qc></qc>
     <!-- <p>取消报名</p> -->
     <div style="height:15vw"></div>
@@ -133,7 +132,7 @@
 </template>
 
 <script>
-import { Group, Cell, Divider, Checker, CheckerItem } from "vux";
+import { Group, Cell, Divider, Checker, CheckerItem, XButton } from "vux";
 import SpHtml from "@/components/Common/html";
 export default {
   components: {
@@ -142,10 +141,20 @@ export default {
     Divider,
     Checker,
     CheckerItem,
-    SpHtml
+    SpHtml,
+    XButton
   },
   data() {
     return {
+      sendLock: false,
+      commentWarp: false,
+      comments: [],
+      commentModel: {
+        sourceId: "",
+        sourceType: 1,
+        content: "",
+        parentId: ""
+      },
       pageNoData: false,
       model: {},
       childActive: [{ name: 1 }, { name: 2 }],
@@ -158,31 +167,59 @@ export default {
     }
   },
   created() {
-    this.apiGetActiveOne(this.$route.query.id);
-    console.log(this.userInfo);
+    this.sourceId = this.$route.query.id;
+    this.apiGetActiveOne(this.sourceId);
     this.query = this.$route.query;
   },
   methods: {
     apiGetActiveOne(id) {
-      this.$http.get("/activitySign/get", { id }).then(res => {
-        this.model = res.data.data;
-        document.title = this.model.title;
-        let url = `http://x.wego168.com/zhongrui/mobile/POUND/activity/detail?wo=1&wot=2&woacm=1&mpl=1&id=${id}`;
-        if (this.userInfo.is_distributer) {
-          url += `&dst=1&dstr=${this.userInfo.id}`;
-        }
-        this.countDown(this.model.startTime);
-        this.$wxSdk.onMenuShare(
-          this.model.title,
-          this.model.info,
-          url,
-          `${this.imgHost}${this.model.iconUrl}`
-        );
-      }).catch(err => {
-        if(err.data.code == 40001) {
-          this.pageNoData = true
-        }
+      this.$http
+        .get("/activitySign/get", { id })
+        .then(res => {
+          this.model = res.data.data;
+          document.title = this.model.title;
+          let url = `http://x.wego168.com/zhongrui/mobile/POUND/activity/detail?wo=1&wot=2&woacm=1&mpl=1&id=${id}`;
+          if (this.userInfo.is_distributer) {
+            url += `&dst=1&dstr=${this.userInfo.id}`;
+          }
+          if(this.model.isEnableComment) {
+            this.apiGetComment(id);
+          }
+          this.countDown(this.model.startTime);
+          this.$wxSdk.onMenuShare(
+            this.model.title,
+            this.model.info,
+            url,
+            `${this.imgHost}${this.model.iconUrl}`
+          );
+        })
+        .catch(err => {
+          if (err.data.code == 40001) {
+            this.pageNoData = true;
+          }
+        });
+    },
+    // 获取评论
+    apiGetComment(sourceId) {
+      this.$http.get("/comment/page", { sourceId }).then(res => {
+        this.comments = res.data.data.list;
       });
+    },
+    // 发评论
+    apiSaveComment(model) {
+      this.sendLock = true;
+      this.$http
+        .post("/comment/insert", model)
+        .then(res => {
+          this.commentWarp = false;
+          this.apiGetComment(model.sourceId);
+        })
+        .catch(err => {
+          this.toast(err.data.message);
+        })
+        .finally(() => {
+          this.sendLock = false
+        });
     },
     apiPayOrder() {
       this.$vux.loading.show({ text: "正在发起支付" });
@@ -204,6 +241,7 @@ export default {
     jumpPay() {
       this.$router.push({ path: "/order/confirm", query: this.query });
     },
+    // 倒计时
     countDown(str) {
       let newStr = str.replace(/\-/g, "/");
       //获取当前时间
@@ -223,6 +261,32 @@ export default {
         ];
         this.lastTime = `${d}天${h}时${m}分${s}秒`;
         this.timer = setTimeout(this.countDown, 1000, str);
+      }
+    },
+    // 发评论
+    showComment(list) {
+      this.commentModel.sourceId = "";
+      this.commentModel.parentId = "";
+      this.commentModel.content = "";
+      this.commentModel.placeholder = "请输入...";
+      if (list) {
+        this.commentModel.sourceId = list.sourceId;
+        this.commentModel.parentId = list.id;
+        this.commentModel.placeholder = `回复:${list.memberName}`;
+      } else {
+        this.commentModel.sourceId = this.sourceId;
+      }
+      this.commentWarp = true;
+    },
+    saveComment() {
+      this.apiSaveComment(this.commentModel);
+    },
+  },
+  directives: {
+    focus: {
+      // 指令的定义
+      inserted: function(el) {
+        el.focus();
       }
     }
   },
@@ -528,6 +592,35 @@ export default {
       align-items: center;
       font-size: 4.5vw;
       color: #fff;
+    }
+  }
+  .comment {
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    display: flex;
+    background: #fff;
+    z-index: 10;
+    height: 56px;
+    & > input {
+      flex: 1;
+      padding: 10px;
+      margin: 10px;
+      border: none;
+      outline: none;
+      border-radius: 2px;
+      background: #eee;
+    }
+    .btn-send {
+      width: 60px;
+      height: 36px;
+      padding: 0;
+      margin: 10px 10px 10px 0;
+      font-size: 14px;
+      border: none;
+      background: #e2513c;
+      color: #fff;
+      border-radius: 3px;
     }
   }
 }

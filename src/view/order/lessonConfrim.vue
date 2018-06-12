@@ -2,13 +2,13 @@
   <div class="want-sign">
     <div class="top white">
       <div class="img">
-        <img :src="`${imgCut}${model.iconUrl}${cutParam1}`" alt="">
+        <img v-show="model.iconUrl" :src="`${imgCut}${model.iconUrl}${cutParam1}`" alt="">
       </div>
       <div class="info">
         <p class="title">{{model.title}}</p>
         <div class="time-price">
           <p class="time">
-            开始时间：{{model.startTime | formatDate}}
+            创建时间：{{model.createTime.substr(0,16)}}
           </p>
           <p class="price" v-if="model.isEnableFee">
             <span>￥</span>
@@ -97,7 +97,7 @@ export default {
   },
   methods: {
     apiGetActiveOne(id) {
-      this.$http.get("/activitySign/get", { id }).then(res => {
+      this.$http.get("/course/get", { id }).then(res => {
         this.model = res.data.data;
         try {
           this.sign.sourceId = this.model.id;
@@ -136,18 +136,18 @@ export default {
     apiSaveOrder(query) {
       this.$vux.loading.show({ text: "正在提交" });
       this.$http
-        .json("/activitySignTemp/sign", query)
+        .json("/courseSign/sign", query)
         .then(res => {
-          if (this.model.activitySignSetting.isEnableAudit) {
-            // 开启审核后
-            this.jumpPage("/order/success?type=1");
-          } else if (this.model.isEnableFee) {
-            // 要给钱
-            this.apiPayOrder(res.data.message);
-          } else {
+          // if (this.model.activitySignSetting.isEnableAudit) {
+          //   // 开启审核后
+          //   this.jumpPage("/order/success?type=1");
+          // } else if (this.model.isEnableFee) {
+          //   // 要给钱
+          //   this.apiPayOrder(res.data.message);
+          // } else {
             // 完美无暇
             this.jumpPage("/order/success?type=0");
-          }
+          // }
         })
         .catch(err => {
           this.toast(err.data.message);

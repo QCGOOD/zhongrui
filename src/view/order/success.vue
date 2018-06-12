@@ -1,17 +1,17 @@
 <template>
   <div class="sign-success">
     <div class="success white">
-      <div class="gou">
+      <div class="gou" v-if="type == 0">
         <i class="iconfont icon-chenggong"></i>
-        <p>试听券领取成功！</p>
-        <p class="desc">期待您的光临哦~</p>
+        <p>报名成功！</p>
+        <!-- <p class="desc">您的学习力+10，保持努力哦~</p> -->
       </div>
-      <!-- <div class="gou" v-else>
+      <div class="gou" v-else>
         <i class="iconfont icon-chenggong"></i>
         <p>预报名成功！</p>
         <p class="desc">正在等待管理员审核...</p>
-      </div> -->
-      <!-- <div class="sum">
+      </div>
+      <div class="sum">
         <div class="item">
           <p>已参加活动</p>
           <p><span>11</span>个</p>
@@ -20,12 +20,12 @@
           <p>待参加活动</p>
           <p><span>11</span>个</p>
         </div>
-      </div> -->
+      </div>
       <p class="back-btn" @click="jumpPage('/activity')">返回首页</p>
       <div class="qrcode">
         <div class="left">
           <p>长按识别二维码关注</p>
-          <p>中睿企业管理</p>
+          <p>中睿企业</p>
           <p>在这里，收获您的知识与梦想！</p>
         </div>
         <div class="right">
@@ -46,7 +46,7 @@ export default {
   },
   data() {
     return {
-      type: "",
+      type: ""
     };
   },
   created() {
@@ -162,7 +162,7 @@ export default {
           }
           &:nth-child(2) {
             padding: 1vw 0;
-            font-size: 7vw;
+            font-size: 6vw;
             font-weight: bold;
             letter-spacing: 2vw;
           }

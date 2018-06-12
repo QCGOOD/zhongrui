@@ -36,7 +36,6 @@ export default {
   },
   created () {
     // this.getLessonList()
-    this.$wxSdk.onMenuShare('加速商学院','助力优秀企业加速发展！','http://abs.wego168.com/accelerator/mobile/POUND/activity?wo=1&wot=2&woacm=1&mpl=1','http://athena-1255600302.cosgz.myqcloud.com/attachments/abs.jpg')
   },
   mounted () {
     this.getHeight()

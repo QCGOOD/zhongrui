@@ -22,6 +22,7 @@ Vue.prototype.$wxSdk = wxSdk
 Vue.prototype.imgHost = 'http://athena-1255600302.cosgz.myqcloud.com'
 Vue.prototype.imgCut = 'http://athena-1255600302.picgz.myqcloud.com'
 Vue.prototype.cutParam1 = '?imageView2/1/w/200/h/164'
+Vue.prototype.cutParam2 = '?imageView2/1/w/375/h/180'
 Vue.prototype.toast = function (text) {
   this.$vux.toast.show({
     text: text,
@@ -33,6 +34,11 @@ Vue.prototype.toast = function (text) {
 
 Vue.filter('formatDate', (v) => {
   return v.replace(/^(.{16})(.*)/g, '$1')
+})
+
+
+Vue.filter('formatPrice', (v) => {
+  return v / 100;
 })
 
 new Vue({

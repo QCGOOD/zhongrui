@@ -1,6 +1,6 @@
 <template>
   <div>
-    <swiper :list="imgList"></swiper>
+    <swiper :imgs="imgs"></swiper>
     <div class="act-type-scroller white">
       <div v-if="categorys.length == 0">
         <skeleton-block></skeleton-block>
@@ -34,8 +34,8 @@
 </template>
 
 <script>
-import { Scroller, Swiper } from "vux";
-// import Swiper from "@/components/Common/Swiper";
+import { Scroller } from "vux";
+import Swiper from "@/components/Common/Swiper";
 import ActItem from "@/components/Common/actItem";
 import listSkeleton from "@/components/skeleton/list-skeleton";
 import skeletonBlock from "@/components/skeleton/block";
@@ -51,18 +51,14 @@ export default {
   data() {
     return {
       imgList: [{ img: "static/image/3.jpg" }, { img: "static/image/4.jpg" }],
+      imgs: [],
       list: [],
       categorys: [],
       typeWidth: 0,
     };
   },
   created() {
-    this.$wxSdk.onMenuShare(
-      "中睿企业管理",
-      "中睿企业管理通过游学、拓展、企业咨询的方式，致力于为在企业管理中遇到瓶颈和难题的企业提供专业有效的解决方案，为更多企业带来新的目标和希望。",
-      "http://x.wego168.com/zhongrui/mobile/POUND/activity?wo=1&wot=2&woacm=1&mpl=1",
-      "http://athena-1255600302.cosgz.myqcloud.com/attachments/activity/008cef2ea40a4143be2aab3113b5d7cb.jpg"
-    );
+    this.apiGetImage();
     this.apiGetCategorys();
     this.apiGetActives();
   },
@@ -72,14 +68,25 @@ export default {
     };
   },
   methods: {
+    apiGetImage() {
+      this.$http.get('/attachment/page')
+        .then(res => {
+          this.imgs = res.data.data.list;
+        })
+    },
     apiGetCategorys() {
+      this.$http.get("/category/treeByType", { type: 2 })
+        .then(res => {
+          this.apiGetCategory(res.data.data[0].id)
+        });
+    },
+    apiGetCategory(id) {
       this.$http
-        .get("/category/listByTypeAndParent", {
-          type: 3,
-          parentId: "40914b72bc094ae18646f607e1cbb2fd"
+        .get("/category/page", {
+          parentId: id
         })
         .then(res => {
-          this.categorys = res.data.data;
+          this.categorys = res.data.data.list;
           this.typeWidth = this.categorys.length * 24 - 4;
         });
     },

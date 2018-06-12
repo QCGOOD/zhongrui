@@ -22,7 +22,7 @@ export default {
       this.$http
         .post("/member/login/mobile", { mobile: "18570478526", code: 1024 })
         .then(res => {
-          this.apiGetOpenId("ogkuh0rsbAzcO8cHLMPiL50rK9lE");
+          // this.apiGetOpenId("ogkuh0rsbAzcO8cHLMPiL50rK9lE");
         });
     },
     apiGetOpenId(openId) {

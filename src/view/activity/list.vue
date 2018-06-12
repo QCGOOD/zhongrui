@@ -37,13 +37,19 @@ export default {
   },
   methods: {
     apiGetCategorys() {
+      this.$http.get("/category/treeByType", { type: 2 })
+        .then(res => {
+          this.apiGetCategory(res.data.data[0].id)
+        });
+    },
+    apiGetCategory(id) {
       this.$http
-        .get("/category/listByTypeAndParent", {
-          type: 3,
-          parentId: "40914b72bc094ae18646f607e1cbb2fd"
+        .get("/category/page", {
+          parentId: id
         })
         .then(res => {
-          this.categorys = res.data.data;
+          this.categorys = res.data.data.list;
+          this.typeWidth = this.categorys.length * 24 - 4;
         });
     },
     apiGetActiveList(categoryId) {

@@ -300,11 +300,11 @@ export default {
         // 获取点赞
         this.apiLikeList()
         // 分享
-        let shareUrl = `http://abs.wego168.com/accelerator_test/mobile/POUND/user/summaryDetail?wo=1&wot=2&woacm=1&mpl=1&id=${this.$route.query.id}`
-        if(this.$route.query.actId) shareUrl = `http://abs.wego168.com/accelerator_test/mobile/POUND/user/summaryDetail?wo=1&wot=2&woacm=1&mpl=1&id=${this.$route.query.id}&actId=${this.$route.query.actId}&isShare=true`
+        let shareUrl = `http://x.wego168.com/zhongrui/mobile/POUND/user/summaryDetail?wo=1&wot=2&woacm=1&mpl=1&id=${this.$route.query.id}`
+        if(this.$route.query.actId) shareUrl = `http://x.wego168.com/zhongrui/mobile/POUND/user/summaryDetail?wo=1&wot=2&woacm=1&mpl=1&id=${this.$route.query.id}&actId=${this.$route.query.actId}&isShare=true`
         this.$wxSdk.onMenuShare(
-          "加速商学院",
-          `我在加速商学院学习，超过${this.feel.studyDays}天啦，你也快来试试吧~`,
+          "中睿企业管理",
+          `中睿企业管理通过游学、拓展、企业咨询的方式，致力于为在企业管理中遇到瓶颈和难题的企业提供专业有效的解决方案，为更多企业带来新的目标和希望。`,
           shareUrl,
           this.imgHost+this.feel.iconUrl
         )
@@ -322,14 +322,23 @@ export default {
 
           // 分享 -- 试听券
           this.$wxSdk.onMenuShare(
-            "我在加速商学院学习，感觉挺不错，你也来看看吧~",
-            `课程试听券等你来拿，手快有，手慢无~`,
-            `http://abs.wego168.com/accelerator_test/mobile/POUND/user/summaryDetail?wo=1&wot=2&woacm=1&mpl=1&id=${this.$route.query.id}&actId=${this.$route.query.actId}&isShare=true`,
-            'http://athena-1255600302.cosgz.myqcloud.com/attachments/activity/fea644b6d6294c3fad029769d69de5f4.png'
+            "中睿企业管理",
+            `中睿企业管理通过游学、拓展、企业咨询的方式，致力于为在企业管理中遇到瓶颈和难题的企业提供专业有效的解决方案，为更多企业带来新的目标和希望。`,
+            `http://x.wego168.com/zhongrui/mobile/POUND/user/summaryDetail?wo=1&wot=2&woacm=1&mpl=1&id=${this.$route.query.id}&actId=${this.$route.query.actId}&isShare=true`,
+            'http://athena-1255600302.cosgz.myqcloud.com/attachments/activity/008cef2ea40a4143be2aab3113b5d7cb.jpg'
           );
         }
       })
     },
+  },
+  
+  destroyed() {
+    this.$wxSdk.onMenuShare(
+      "中睿企业管理",
+      "中睿企业管理通过游学、拓展、企业咨询的方式，致力于为在企业管理中遇到瓶颈和难题的企业提供专业有效的解决方案，为更多企业带来新的目标和希望。",
+      "http://x.wego168.com/zhongrui/mobile/POUND/activity?wo=1&wot=2&woacm=1&mpl=1",
+      "http://athena-1255600302.cosgz.myqcloud.com/attachments/activity/008cef2ea40a4143be2aab3113b5d7cb.jpg"
+    );
   }
 }
 </script>
