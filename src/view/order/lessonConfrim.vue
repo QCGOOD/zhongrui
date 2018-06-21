@@ -52,7 +52,7 @@
       </div>
     </div>
     <div class="btn-pay" @click="save()" v-if="model.isEnableFee && !model.activitySignSetting.isEnableAudit">
-      <div class="price">总计 <span>{{this.sign.price * sign.num}}</span></div>
+      <div class="price">总计 <span>{{sign.price * sign.num}}</span></div>
       <div class="pay">微信支付</div>
     </div>
     <div class="btn" @click="save()" v-else>

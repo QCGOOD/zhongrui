@@ -67,15 +67,7 @@
 </template>
 
 <script>
-import {
-  Group,
-  Cell,
-  InlineXNumber,
-  Radio,
-  Checklist,
-  Popup,
-  TransferDom
-} from "vux";
+import { Group, Cell, InlineXNumber, Radio, Checklist, Popup, TransferDom, PopupRadio } from "vux";
 import CouponItem from "@/components/Common/couponItem";
 
 export default {
@@ -89,7 +81,8 @@ export default {
     Radio,
     Checklist,
     Popup,
-    CouponItem
+    CouponItem,
+    PopupRadio
   },
   data() {
     return {
