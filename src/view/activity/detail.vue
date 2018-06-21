@@ -105,8 +105,8 @@
       <input v-focus v-model="commentModel.content" :placeholder="commentModel.placeholder" @blur="commentWarp = false" type="text">
       <x-button class="btn-send" :disabled="sendLock" @click.native="saveComment">{{commentModel.parentId ? '回复' :'评论'}}</x-button>
     </div>
+    <p class="cancel-sign" @click="apiCancelSign(model.id)" v-if="model.activitySignSetting.isEnableUnsign">取消报名</p>
     <qc></qc>
-    <!-- <p>取消报名</p> -->
     <div style="height:15vw"></div>
     <div class="bottom-sign vux-1px-t" v-if="model.isRelease">
       <div class="left" @click="jumpPage('/activity')">
@@ -190,11 +190,14 @@ export default {
         .then(res => {
           this.model = res.data.data;
           document.title = this.model.title;
+          // 分享链接
           let url = `http://x.wego168.com/zhongrui/mobile/POUND/activity/detail?wo=1&wot=2&woacm=1&mpl=1&id=${id}`;
           if (this.userInfo.is_distributer) {
+            // 分销人员
             url += `&dst=1&dstr=${this.userInfo.id}`;
           }
           if(this.model.isEnableComment) {
+            // 开启评论
             this.apiGetComment(id);
           }
           this.countDown(this.model.startTime);
@@ -247,6 +250,22 @@ export default {
             res.data.data.id
           }`;
         });
+    },
+    apiCancelSign(id) {
+      const _this = this;
+      this.$vux.confirm.show({
+        title: '提示',
+        content: '是否取消本次报名',
+        onCancel () {
+          console.log('plugin cancel')
+        },
+        onConfirm () {
+          _this.$http.get('/activitySign/cancel', {id})
+            .then(res => {
+              console.log(res.data.data);
+            })
+        }
+      })
     },
     jumpPage(url) {
       this.$router.push(url);
@@ -517,7 +536,6 @@ export default {
       list-style: none;
     }
     padding: 6vw 4vw;
-    margin-bottom: 15vw;
     &__title {
       margin: 15px 0 25px;
       display: flex;
@@ -639,6 +657,11 @@ export default {
       color: #fff;
       border-radius: 3px;
     }
+  }
+  .cancel-sign {
+    text-align: center;
+    font-size: 14px;
+    color: #b7b7b7;
   }
 }
 .nodata {

@@ -1,7 +1,7 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
-import { ToastPlugin, LoadingPlugin, VuxComponentListData } from 'vux'
+import { ToastPlugin, LoadingPlugin, VuxComponentListData,ConfirmPlugin } from 'vux'
 import VueScroller from 'vue-scroller'
 import App from './App'
 import router from './router'
@@ -15,6 +15,7 @@ Vue.config.productionTip = false
 Vue.use(VueScroller)
 Vue.use(ToastPlugin)
 Vue.use(LoadingPlugin)
+Vue.use(ConfirmPlugin )
 Vue.use(require('vue-wechat-title'))
 Vue.component(Qc.name, Qc)
 Vue.prototype.$http = http
