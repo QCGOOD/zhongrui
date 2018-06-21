@@ -12,7 +12,7 @@
           </p>
           <p class="price" v-if="model.isEnableFee">
             <span>￥</span>
-            {{this.sign.price}}
+            {{totalAmount | formatPrice}}
           </p>
           <p class="price" v-else>免费</p>
         </div>
@@ -128,7 +128,7 @@ export default {
   methods: {
     // 查询活动
     apiGetActiveOne(id) {
-      this.$http.get("/activitySign/get", { id }).then(res => {
+      this.$http.get("/activity/get", { id }).then(res => {
         this.model = res.data.data;
         if (this.model.isEnableFee) {
           this.apiGetConpon({

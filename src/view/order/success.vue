@@ -12,20 +12,20 @@
         <p class="desc">正在等待管理员审核...</p>
       </div>
       <div class="sum">
-        <div class="item">
+        <!-- <div class="item">
           <p>已参加活动</p>
-          <p><span>11</span>个</p>
-        </div>
-        <div class="item">
+          <p><span>{{activityNum.signActivityNum}}</span>个</p>
+        </div> -->
+        <!-- <div class="item">
           <p>待参加活动</p>
           <p><span>11</span>个</p>
-        </div>
+        </div> -->
       </div>
       <p class="back-btn" @click="jumpPage('/activity')">返回首页</p>
       <div class="qrcode">
         <div class="left">
           <p>长按识别二维码关注</p>
-          <p>中睿企业</p>
+          <p>中睿企业管理</p>
           <p>在这里，收获您的知识与梦想！</p>
         </div>
         <div class="right">
@@ -46,13 +46,21 @@ export default {
   },
   data() {
     return {
-      type: ""
+      type: "",
+      activityNum: {}
     };
   },
   created() {
     this.type = this.$route.query.type;
+    this.apiGetActivityNum();
   },
   methods: {
+    apiGetActivityNum() {
+      this.$http.get('/my/activityNum')
+        .then(res => {
+          this.activityNum = res.data.data;
+        });
+    },
     jumpPage(url) {
       this.$router.push(url);
     }
@@ -107,17 +115,11 @@ export default {
         text-align: center;
         p {
           font-size: 4vw;
-          // 删
-          color: #fff;
           &:last-child {
             font-size: 3.2vw;
             color: @gray-color;
-            // 删
-            color: #fff;
             span {
               color: rgb(51, 51, 51);
-              // 删
-              color: #fff;
               font-weight: bold;
               font-size: 12vw;
             }

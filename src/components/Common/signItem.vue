@@ -48,6 +48,10 @@ export default {
       overflow: hidden;
       flex-shrink: 0;
       margin-right: 4vw;
+      & > img {
+        width: 100%;
+        height: 100%;
+      }
     }
     .user {
       font-size: 4vw;

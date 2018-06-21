@@ -108,20 +108,16 @@
     <qc></qc>
     <!-- <p>取消报名</p> -->
     <div style="height:15vw"></div>
-    <div class="bottom-sign vux-1px-t" v-if="model.status != 0">
+    <div class="bottom-sign vux-1px-t" v-if="model.isRelease">
       <div class="left" @click="jumpPage('/activity')">
         <i class="iconfont icon-huodong"></i>
         <p>更多活动</p>
       </div>
-      <div v-if="!model.sign" class="right" @click="jumpPay()">
-        我要报名
-      </div>
-      <div v-else-if="model.sign.status == 4" class="right" style="background-color: #62b900" @click="apiPayOrder()">
-        微信支付
-      </div>
-      <div v-else class="right">
-        报名成功
-      </div>
+      <div v-if="matchTime == 0" class="right" style="background: #d0d0d0">未开始</div>
+      <div v-else-if="matchTime == 1" class="right" style="background: #d0d0d0">已结束</div>
+      <div v-else-if="!model.sign" class="right" @click="jumpPay()">我要报名</div>
+      <div v-else-if="model.sign.status == 4" class="right" style="background-color: #62b900" @click="apiPayOrder()">微信支付</div>
+      <div v-else class="right">报名成功</div>
     </div>
   </div>
   <div v-else class="nodata">
@@ -164,7 +160,24 @@ export default {
   computed: {
     userInfo() {
       return this.$store.state.user;
-    }
+    },
+    matchTime() {
+      let startTime = this.model.activitySignSetting.signStartTime.replace(/\-/g, "/");
+      let endTime = this.model.activitySignSetting.signEndTime.replace(/\-/g, "/");
+      if ((new Date(startTime)) > (new Date())) {
+        // 活动未开始
+        console.log('活动状态=======>未开始')
+        return 0
+      } else if ((new Date(endTime)) < (new Date())) {
+        // 活动已结束
+        console.log('活动状态=======>已结束')
+        return 1
+      } else {
+        // 可以报名
+        console.log('活动状态=======>进行中')
+        return 2
+      }
+    },
   },
   created() {
     this.sourceId = this.$route.query.id;
@@ -173,8 +186,7 @@ export default {
   },
   methods: {
     apiGetActiveOne(id) {
-      this.$http
-        .get("/activitySign/get", { id })
+      this.$http.get("/activity/get", { id })
         .then(res => {
           this.model = res.data.data;
           document.title = this.model.title;
@@ -201,7 +213,8 @@ export default {
     },
     // 获取评论
     apiGetComment(sourceId) {
-      this.$http.get("/comment/page", { sourceId }).then(res => {
+      let auditStatus = this.model.isEnableCommentAudit ? '2' : '1';
+      this.$http.get("/comment/page", { sourceId, auditStatus }).then(res => {
         this.comments = res.data.data.list;
       });
     },
@@ -467,6 +480,10 @@ export default {
             border: 2px solid #ffffff;
             box-sizing: border-box;
             margin-left: -2vw;
+            & > img {
+              width: 100%;
+              height: 100%;
+            }
             &:first-child {
               margin-left: 0;
             }

@@ -165,7 +165,7 @@ export default {
     },
     // 获取h活动
     getActi(){
-      this.$http.get('/activitySign/get', {id: this.$route.query.id}).then(res => {
+      this.$http.get('/activity/get', {id: this.$route.query.id}).then(res => {
       // this.$http.get('/course/get', {id: '95b018502f1140b3bb81ea94ac820e6b'}).then(res => {
         console.log('活动=====',res.data)
         this.model.iconUrl = res.data.data.iconUrl

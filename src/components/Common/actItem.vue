@@ -5,6 +5,7 @@
     </div>
     <div class="info">
       <p class="title">{{item.title}}</p >
+      <span style="width:1px;display:inline-block"></span>
       <span class="type" v-for="(tag,i) in item.activityTagList" :key="i">{{tag.name}}</span>
       <Tag :status='item.status'></Tag>
       <div class="time-price">

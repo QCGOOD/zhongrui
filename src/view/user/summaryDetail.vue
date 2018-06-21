@@ -314,7 +314,7 @@ export default {
     },
     // 获取h活动
     getActi(){
-      this.$http.get('/activitySign/get', {id: this.$route.query.actId}).then(res => {
+      this.$http.get('/activity/get', {id: this.$route.query.actId}).then(res => {
         if(res.data.data.couponRuleId && res.data.data.couponRuleId != '') {
           this.couponId = res.data.data.couponRuleId
           // 获取优惠券详情

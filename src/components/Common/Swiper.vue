@@ -3,9 +3,9 @@
     <swiper>
       <swiper-item class="swiper-item-img" v-for="(item, index) in imgs" :key="index" @click.native="goDetail(item.href)">
         <img :src="`${imgCut}${item.url}${cutParam2}`" >
-        <div class="title">
+        <!-- <div class="title">
           <p style="width:100%">{{item.name}}</p>
-        </div>
+        </div> -->
       </swiper-item>
     </swiper>
   </div>
