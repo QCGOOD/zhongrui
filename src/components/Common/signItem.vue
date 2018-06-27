@@ -4,13 +4,17 @@
       <div class="img">
         <img :src="item.headImage" alt="">
       </div>
-      <div class="user">
-        <p class="name">{{item.name | formatName}}</p>
-        <p class="position">{{item.company}} <span v-if="item.company && item.position">|</span> {{item.position}}</p>
+      <div class="msg">
+        <p class="header">
+          <span></span>
+          <span>{{item.signTimeStr}}</span>
+        </p>
+        <p class="content">
+          <span class="name" v-for="list in item.signDataList" :key="list.id" v-if="list.name == '姓名'">{{list.value | formatName}}</span>
+          <span v-else-if="list.name == '手机'">{{list.value | formatPhome}}</span>
+          <span v-else-if="list.value">{{list.value}}</span>
+        </p>
       </div>
-    </div>
-    <div class="time">
-      {{item.signTimeStr}}
     </div>
   </div>
 </template>
@@ -26,6 +30,10 @@ export default {
     },
     formatTime(v) {
       return v.replace(/(.*)(.{7})/g,'$1');
+    },
+    formatPhome(v) {
+      console.log(v);
+      return v.replace(/^(\d{3})(\d{4})(\d{4})/g,'$1****$2');
     }
   }
 }
@@ -40,7 +48,9 @@ export default {
     left: 4vw;
   }
   .info-box {
-    display: inline-flex;
+    display: flex;
+    width: 100%;
+    font-size: 14px;
     .img {
       width: 10vw;
       height: 10vw;
@@ -48,25 +58,37 @@ export default {
       overflow: hidden;
       flex-shrink: 0;
       margin-right: 4vw;
-      & > img {
-        width: 100%;
-        height: 100%;
+    }
+    .msg {
+      flex: 1;
+      .header,.content {
+        display: flex;
+      }
+      .header {
+        justify-content: space-between;
+      }
+      .content {
+        flex-wrap: wrap;
+        span {
+          height: 15px;
+          margin-top: 6px;
+          padding-right: 8px;
+          margin-right: 8px;
+          line-height: 1;
+          border-right: 1px solid #d4d4d4;
+        }
+        span:last-child {
+          border: none;
+          padding-left: 0;
+        }
+        .name {
+          position: absolute;
+          top: 5px;
+          border: none;
+          padding: 0;
+        }
       }
     }
-    .user {
-      font-size: 4vw;
-      .position {
-        color: @gray-color;
-        font-size: 3.5vw;
-      }
-    }
-  }
-  .time {
-    flex-shrink: 0;
-    margin-left: 2vw;
-    color: @gray-color;
-    font-size: 3.5vw;
   }
 }
 </style>
-

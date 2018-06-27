@@ -47,7 +47,7 @@
           </div>
         </checker-item>
       </checker> -->
-      <div class="sign-up-box white" @click="jumpPage(`/activity/sign?id=${$route.query.id}&c=${model.activitySignSetting.maxNum}&s=${model.activitySignSetting.signNum}`)">
+      <div class="sign-up-box white" @click="jumpSignPage(`/activity/sign?id=${$route.query.id}&c=${model.activitySignSetting.maxNum}&s=${model.activitySignSetting.signNum}`)">
         <div class="item sign-up">
           <div class="left">
             <i class="iconfont icon-baoming"></i>
@@ -105,7 +105,7 @@
       <input v-focus v-model="commentModel.content" :placeholder="commentModel.placeholder" @blur="commentWarp = false" type="text">
       <x-button class="btn-send" :disabled="sendLock" @click.native="saveComment">{{commentModel.parentId ? '回复' :'评论'}}</x-button>
     </div>
-    <p class="cancel-sign" @click="apiCancelSign(model.id)" v-if="model.activitySignSetting.isEnableUnsign">取消报名</p>
+    <p class="cancel-sign" @click="apiCancelSign(model.sign.id)" v-if="model.activitySignSetting.isEnableUnsign && model.sign">取消报名</p>
     <qc></qc>
     <div style="height:15vw"></div>
     <div class="bottom-sign vux-1px-t" v-if="model.isRelease">
@@ -260,12 +260,17 @@ export default {
           console.log('plugin cancel')
         },
         onConfirm () {
-          _this.$http.get('/activitySign/cancel', {id})
+          _this.$http.post('/activitySign/cancel', {id})
             .then(res => {
               console.log(res.data.data);
             })
         }
       })
+    },
+    jumpSignPage(url) {
+      if(this.model.activitySignSetting.isShowSignMembers) {
+        this.$router.push(url);
+      }
     },
     jumpPage(url) {
       this.$router.push(url);

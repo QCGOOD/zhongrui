@@ -21,8 +21,8 @@ export default {
     this.apiGetSignUps(this.$route.query.id);
   },
   methods: {
-    apiGetSignUps(activityId) {
-      this.$http.get("/activitySign/signMembers", { activityId }).then(res => {
+    apiGetSignUps(sourceId) {
+      this.$http.get("/activitySign/signMembers", { sourceId }).then(res => {
         this.list = res.data.data.list;
         console.log(this.list)
       });
