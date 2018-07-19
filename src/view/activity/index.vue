@@ -81,19 +81,17 @@ export default {
         });
     },
     apiGetCategory(id) {
-      this.$http
-        .get("/category/page", {
-          parentId: id
-        })
+      this.$http.get("/category/page", {parentId: id})
         .then(res => {
           this.categorys = res.data.data.list;
           this.typeWidth = this.categorys.length * 24 - 4;
         });
     },
     apiGetActives() {
-      this.$http.get("/activity/recentPage").then(res => {
-        this.list = res.data.data.list;
-      });
+      this.$http.get("/activity/page", {pageNum: 1, pageSize:10})
+        .then(res => {
+          this.list = res.data.data.list;
+        });
     },
     jumpPage(url) {
       this.$router.push(url);
